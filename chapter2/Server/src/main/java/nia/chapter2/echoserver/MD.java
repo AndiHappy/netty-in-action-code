@@ -14,6 +14,7 @@ public final class MD extends ByteToMessageDecoder {
 		in.readBytes(bytes);
 		String value = new String(bytes);
 		System.out.println("MessageDecoder received: "+value);
+		// out中是否有值，决定是否向下继续运行
 		out.add(value);
 	}
 }

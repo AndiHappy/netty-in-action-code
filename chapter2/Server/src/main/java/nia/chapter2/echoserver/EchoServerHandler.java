@@ -1,12 +1,10 @@
 package nia.chapter2.echoserver;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.CharsetUtil;
 
 /**
  * Listing 2.1 EchoServerHandler
@@ -20,7 +18,11 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 //        ByteBuf in = (ByteBuf) msg;
         String inString = (String) msg;
         System.out.println("Server received: " + inString);
-//        ctx.fireChannelRead(inString);
+        //继续向下运行的一个内容
+        ctx.fireChannelRead(inString);
+        //进入outbound的链中
+        ctx.write(inString);
+
     }
 
     @Override

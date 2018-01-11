@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * Listing 2.3 ChannelHandler for the client
@@ -13,8 +14,7 @@ import io.netty.util.CharsetUtil;
  * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
  */
 @Sharable
-public class EchoClientHandler
-    extends SimpleChannelInboundHandler<ByteBuf> {
+public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         ctx.writeAndFlush(Unpooled.copiedBuffer("Netty rocks!",
@@ -25,6 +25,21 @@ public class EchoClientHandler
     public void channelRead0(ChannelHandlerContext ctx, ByteBuf in) {
         System.out.println(
                 "Client received: " + in.toString(CharsetUtil.UTF_8));
+    }
+    
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+         try {
+        	 if(msg instanceof ByteBuf ){
+        		 channelRead0(ctx, (ByteBuf) msg);
+        	 }
+        	 
+        	 if( msg instanceof String){
+        		 System.out.println("Client received: " +msg);
+        	 }
+         } finally {
+        	 ReferenceCountUtil.release(msg);
+         }
     }
 
     @Override
